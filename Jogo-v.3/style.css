@@ -1,0 +1,46 @@
+body { 
+    background-color: #050b14; 
+}
+
+/* Efeitos Neon */
+.glow-green { 
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.8); 
+}
+.glow-red { 
+    text-shadow: 0 0 15px rgba(239, 68, 68, 0.9); 
+    animation: pulse 1s infinite; 
+}
+
+/* Efeito do Combo Pegando Fogo */
+.fire-streak { 
+    color: #f59e0b; 
+    text-shadow: 0 0 10px #ef4444, 0 0 20px #f97316; 
+    animation: flicker 1.5s infinite; 
+}
+
+@keyframes pulse { 
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0.5; } 
+}
+
+@keyframes flicker {
+    0%, 100% { text-shadow: 0 0 10px #ef4444, 0 0 20px #f97316; }
+    50% { text-shadow: 0 0 5px #ef4444, 0 0 10px #fbbf24; }
+}
+
+/* Efeito da IA digitando igual terminal Hacker */
+.typing-effect::after {
+    content: '▌'; 
+    animation: blink 1s step-start infinite; 
+    color: #a855f7;
+}
+
+@keyframes blink { 
+    50% { opacity: 0; } 
+}
+
+/* Scrollbar Bonitinha */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #111827; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #10b981; }

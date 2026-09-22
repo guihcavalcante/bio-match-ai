@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Match: IA Edition</title>
+    <!-- Tailwind CSS (Framework) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Arquivo de Estilos (Seu CSS) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+
+    <!-- HEADER -->
+    <header class="bg-gray-900 border-b border-emerald-900/50 p-4 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <h1 class="text-2xl font-black tracking-wider text-emerald-400 glow-green">🧪 BIO-MATCH <span class="text-xs text-emerald-200 align-top">A.I. CORE</span></h1>
+            <nav class="flex flex-wrap justify-center gap-2">
+                <button onclick="switchTab('tab-jogo')" class="nav-btn bg-emerald-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md">🎮 Arena</button>
+                <button onclick="switchTab('tab-equipes')" class="nav-btn bg-gray-800 text-gray-300 font-semibold px-4 py-2 rounded-lg">👥 Equipes</button>
+                <button onclick="switchTab('tab-questoes')" class="nav-btn bg-gray-800 text-gray-300 font-semibold px-4 py-2 rounded-lg">📚 Banco de Dados</button>
+                <button onclick="switchTab('tab-config')" class="nav-btn bg-purple-900 text-purple-200 font-semibold px-4 py-2 rounded-lg border border-purple-500/50">⚙️ IA API</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+        
+        <!-- ABA: ARENA DO JOGO -->
+        <section id="tab-jogo" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Placar -->
+                <div class="lg:col-span-1 bg-gray-900/80 border border-gray-800 rounded-2xl p-4 shadow-lg h-fit">
+                    <h2 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">🏆 Placar</h2>
+                    <div id="game-scoreboard" class="space-y-3"></div>
+                </div>
+
+                <!-- Arena -->
+                <div class="lg:col-span-3 flex flex-col justify-between bg-gray-900 border border-emerald-900/30 rounded-2xl p-6 shadow-xl min-h-[500px]">
+                    
+                    <!-- Setup -->
+                    <div id="game-setup-screen" class="space-y-6 py-12 text-center max-w-md mx-auto">
+                        <div class="text-5xl animate-bounce">🌿</div>
+                        <h3 class="text-2xl font-bold">Iniciar Duelo</h3>
+                        <select id="game-collection-select" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-3 text-white focus:outline-none focus:border-emerald-500"></select>
+                        <select id="game-active-team" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-3 text-white mt-2">
+                            <option value="">Selecione a Equipe da Vez...</option>
+                        </select>
+                        <button onclick="startGame()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg shadow-lg transition-transform hover:scale-105 mt-4">INICIAR RODADA</button>
+                    </div>
+
+                    <!-- Rodando -->
+                    <div id="game-arena-screen" class="hidden h-full flex flex-col">
+                        
+                        <!-- Header da Arena -->
+                        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-800 pb-3 mb-4 gap-4">
+                            <span id="game-current-team-display" class="bg-gray-800 text-white px-4 py-1 rounded-lg font-bold">Equipe: ?</span>
+                            
+                            <div class="flex items-center gap-2 bg-gray-950 px-5 py-2 rounded-xl border border-gray-800 shadow-inner">
+                                <span class="text-xs text-gray-500 uppercase font-mono font-bold">Tempo</span>
+                                <span id="game-timer" class="text-3xl font-mono font-black text-emerald-400">30</span>
+                            </div>
+                            
+                            <button onclick="usarOraculo()" id="btn-oraculo" class="bg-purple-900/50 hover:bg-purple-800 text-purple-300 border border-purple-500/50 text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-all">
+                                🔮 IA Oráculo
+                            </button>
+                        </div>
+
+                        <!-- Pergunta e Opções -->
+                        <div class="flex-1 flex flex-col justify-center">
+                            <h3 id="game-question-text" class="text-xl md:text-2xl font-semibold text-white leading-relaxed mb-6">Carregando...</h3>
+                            
+                            <!-- Caixa da IA -->
+                            <div id="ai-feedback-box" class="hidden bg-gray-950 border border-purple-500/30 p-4 rounded-xl mb-6 shadow-lg">
+                                <p class="text-purple-400 text-sm font-mono font-bold mb-1">🤖 Gemini Core:</p>
+                                <p id="ai-feedback-text" class="text-gray-300 text-sm md:text-base typing-effect">Processando...</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-3" id="game-options-container"></div>
+                        </div>
+
+                        <!-- Controles de Rodada (Footer) -->
+                        <div class="border-t border-gray-800 pt-4 mt-6 flex flex-wrap justify-between items-center gap-4">
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <button onclick="startCountdown()" id="btn-timer" class="bg-amber-600 hover:bg-amber-500 text-white text-sm font-bold px-5 py-2.5 rounded-lg">⏱️ Iniciar Tempo</button>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span id="game-questions-counter" class="text-xs font-mono text-gray-500">Restam: 0</span>
+                                <button onclick="drawQuestion()" id="btn-next-question" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold px-5 py-2.5 rounded-lg">🎲 Próxima</button>
+                                <button onclick="encerrarPartida()" class="text-red-400 text-xs hover:text-red-300 underline font-bold">Encerrar Partida</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA EQUIPES -->
+        <section id="tab-equipes" class="tab-content hidden max-w-2xl mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-xl font-bold text-emerald-400 mb-2">👥 Gerenciador de Equipes</h2>
+            <form onsubmit="addTeam(event)" class="flex gap-2 mb-6">
+                <input type="text" id="team-name-input" placeholder="Nome da Equipe (Ex: Alfa)..." required class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
+                <button type="submit" class="bg-emerald-600 px-6 py-2 rounded-lg text-white font-bold">Adicionar</button>
+            </form>
+            <ul id="teams-list" class="divide-y divide-gray-800"></ul>
+        </section>
+
+        <!-- ABA QUESTÕES -->
+        <section id="tab-questoes" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-xl">
+                    <h2 class="text-lg font-bold text-emerald-400 mb-4">📁 Coleções</h2>
+                    <form onsubmit="addCollection(event)" class="flex gap-2 mb-4">
+                        <input type="text" id="collection-name-input" placeholder="Nova Coleção..." required class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-white">
+                        <button type="submit" class="bg-emerald-600 px-3 py-1.5 rounded-lg text-white text-sm font-bold">+</button>
+                    </form>
+                    <div id="collections-list" class="space-y-2"></div>
+                </div>
+                <div class="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow-xl">
+                    <h2 class="text-lg font-bold text-emerald-400 mb-4 border-b border-gray-800 pb-2">Questões em: <span id="selected-collection-title" class="text-white">Nenhuma</span></h2>
+                    <form id="form-add-question" onsubmit="addQuestion(event)" class="space-y-3 hidden">
+                        <textarea id="q-text" rows="2" required placeholder="Digite a Pergunta..." class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500"></textarea>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <input type="text" id="q-optA" placeholder="Opção A" required class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white">
+                            <input type="text" id="q-optB" placeholder="Opção B" required class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white">
+                            <input type="text" id="q-optC" placeholder="Opção C" required class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white">
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-gray-400">Gabarito:</span>
+                                <select id="q-correct" class="bg-emerald-900 border border-emerald-700 font-bold rounded-lg px-3 py-1.5 text-white"><option value="A">A</option><option value="B">B</option><option value="C">C</option></select>
+                            </div>
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 px-6 py-2 rounded-lg text-white text-sm font-bold shadow-lg">Salvar Pergunta</button>
+                        </div>
+                    </form>
+                    <div id="questions-pool-list" class="space-y-2 mt-4 max-h-64 overflow-y-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA DE CONFIGURAÇÕES DA IA -->
+        <section id="tab-config" class="tab-content hidden max-w-2xl mx-auto bg-gray-900 border border-purple-900/50 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">⚙️ Configurações da API Gemini</h2>
+            <p class="text-sm text-gray-400 mb-6">Cole aqui a sua chave de API do Google Gemini para habilitar o Botão Oráculo e o Feedback Automático. A chave fica salva apenas no seu computador.</p>
+            <div class="flex gap-2">
+                <input type="password" id="api-key-input" placeholder="Cole sua chave AIzaSy..." class="flex-1 bg-gray-950 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-purple-500 focus:outline-none">
+                <button onclick="saveApiKey()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-2 rounded-lg shadow-lg">Salvar Chave</button>
+            </div>
+            <p id="api-status" class="mt-4 text-sm font-mono text-emerald-400 hidden">✅ Chave de API ativada e salva com segurança!</p>
+        </section>
+
+    </main>
+
+    <!-- Arquivo Lógico (Seu JS) -->
+    <script src="script.js"></script>
+</body>
+</html>
