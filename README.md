@@ -9,7 +9,7 @@ Aplicação web interativa e gamificada desenvolvida como projeto interdisciplin
 
 ## 🚀 Arquitetura e Funcionalidades
 
-* **Integração com LLM:** Uso da API do Google Gemini (modelo `gemini-3.6-flash`) para atuar como um "Oráculo" em tempo real, fornecendo dicas dinâmicas e corrigindo erros de forma didática com base nas respostas dos usuários.
+* **Integração com LLM:** Uso da API do Google Gemini (modelo `gemini-3.5-flash-lite`) para atuar como um "Oráculo" em tempo real, fornecendo dicas dinâmicas e corrigindo erros de forma didática com base nas respostas dos usuários.
 * **Client-Side Storage:** Utilização de `LocalStorage` para persistência do banco de dados de perguntas, configurações de API e placar, permitindo que a aplicação rode 100% no navegador sem dependência de um backend em nuvem.
 * **Audio Synthesis:** Implementação nativa da *Web Audio API* para geração procedural de efeitos sonoros (SFX) durante a partida, eliminando o carregamento de arquivos MP3 externos.
 * **Mecânica de Eustresse:** Temporizador assíncrono projetado para gerar atenção seletiva através de estímulos visuais e sonoros nos segundos finais.
